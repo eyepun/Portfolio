@@ -1,88 +1,252 @@
-<div class="profile-container">
-    <!-- คนที่ 1 ฝั่งซ้าย -->
-    <div class="profile-item">
-        <img src="IMG_8791.jpeg" alt="รูปคนที่ 1">
-        <p>phraethip molee no.22 m.6/1 </p>
-    </div>
-    <!-- คนที่ 2 ฝั่งขวา -->
-    <div class="profile-item">
-        <img src="att.HR.jpeg" alt="รูปคนที่ 2">
-        <p>pakjirapon Booymak no.26 m.6/1</p>
-    </div>
-</div>
-<!DOCTYPE html>
+from pathlib import Path
+from zipfile import ZipFile, ZIP_DEFLATED
+import shutil, os
+
+base = Path("/mnt/data/portfolio_website")
+base.mkdir(exist_ok=True)
+
+# Copy the two uploaded portraits using the exact mounted paths.
+shutil.copy2("/mnt/data/56730E02-2F52-4BB7-9820-B3CF1BF760B8.jpeg", base / "palita.jpeg")
+shutil.copy2("/mnt/data/82CFD2C4-F763-4BFA-9850-1A4B43C7F567.jpeg", base / "punyanut.jpeg")
+
+html = r'''<!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio - กิตติกวิน พุทธกาล</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: Arial, sans-serif;
-            background: #dceefa;
-            text-align: center;
-        }
-
-        header {
-            background: #5b9bd5;
-            color: white;
-            padding: 25px;
-        }
-
-        h1 {
-            font-size: 30px;
-        }
-
-        .portfolio {
-            max-width: 900px;
-            margin: 30px auto;
-            padding: 10px;
-        }
-
-        iframe {
-            width: 100%;
-            height: 900px;
-            border: none;
-            background: white;
-            border-radius: 10px;
-        }
-
-        footer {
-            background: #5b9bd5;
-            color: white;
-            padding: 20px;
-            margin-top: 30px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCASFOLIO | แฟ้มสะสมผลงาน</title>
+<style>
+:root{
+  --purple:#5b168f; --deep:#39005f; --lavender:#f5efff;
+  --light:#ead8ff; --accent:#b76cf2; --text:#30283a; --white:#fff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Tahoma,Arial,sans-serif;background:var(--lavender);color:var(--text);line-height:1.8}
+header{
+  text-align:center;color:white;padding:68px 20px 58px;
+  background:linear-gradient(125deg,#5b0b91,#a64be0,#d29bff)
+}
+header h1{font-size:clamp(2.1rem,6vw,3.7rem);letter-spacing:1px;line-height:1.25}
+header .subtitle{font-size:1.2rem;margin-top:8px}
+header .program{font-size:1rem;margin-top:8px}
+nav{
+  position:sticky;top:0;z-index:10;background:var(--deep);
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px
+}
+nav a{color:#fff;text-decoration:none;padding:7px 12px;border-radius:20px;font-weight:bold}
+nav a:hover{background:#7c27b7}
+main{max-width:1100px;margin:auto;padding:0 20px}
+section{padding:48px 0;scroll-margin-top:76px}
+.section-title{font-size:1.8rem;color:var(--purple);text-align:center;border-bottom:3px solid var(--accent);padding-bottom:10px;margin-bottom:28px}
+.intro{text-align:center;margin:20px auto 0;max-width:780px}
+.profiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px;max-width:800px;margin:30px auto}
+.profile-card,.card,.activity-card,.award-card{
+  background:var(--white);border-radius:18px;padding:24px;
+  box-shadow:0 6px 20px rgba(65,25,95,.09)
+}
+.profile-card{text-align:center}
+.profile-card img{width:210px;height:210px;max-width:100%;object-fit:cover;border-radius:50%;border:6px solid var(--accent);display:block;margin:0 auto 16px}
+.profile-card h3{color:var(--purple);font-size:1.15rem}
+.profile-card p{font-size:.95rem;color:#665b70}
+.info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.info-item{padding:13px 15px;background:#faf7ff;border-radius:12px}
+.info-item strong{color:var(--purple)}
+blockquote{border-left:5px solid var(--accent);padding:15px 20px;background:#fbf8ff;border-radius:0 12px 12px 0;margin:15px 0}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.card h3,.activity-card h3,.award-card h3{color:var(--purple);margin-bottom:8px}
+.card p,.activity-card p,.award-card p{margin:5px 0}
+.tag{display:inline-block;background:#f0e0ff;color:var(--purple);padding:3px 10px;border-radius:20px;font-size:.88rem;margin:4px 4px 4px 0}
+ul{padding-left:22px}
+footer{text-align:center;background:var(--deep);color:white;padding:25px 15px;margin-top:25px}
+.small-note{font-size:.9rem;color:#6d6177}
+@media(max-width:700px){
+  .profiles,.info-grid,.cards{grid-template-columns:1fr}
+  .profile-card img{width:190px;height:190px}
+  nav{gap:2px}
+  nav a{font-size:.9rem;padding:6px 8px}
+  main{padding:0 15px}
+  section{padding:35px 0}
+}
+</style>
 </head>
-
 <body>
 
-    <header>
-        <h1>PORTFOLIO</h1>
-        <p>แฟ้มสะสมผลงาน</p>
-        <p>นาย กิตติกวิน พุทธกาล</p>
-        <p>คณะมนุษยศาสตร์และสังคมศาสตร์</p>
-        <p>สาขารัฐประศาสนศาสตร์</p>
-    </header>
+<header>
+  <h1>TCASFOLIO</h1>
+  <div class="subtitle">แฟ้มสะสมผลงาน ประจำปี 2570</div>
+  <div class="program">มหาวิทยาลัยราชภัฎสุราษฎร์ธานี · คณะมนุษศาสตร์และสังคมศึกษา</div>
+  <div class="program">สาขารัฐประศาสตร์</div>
+</header>
 
-    <div class="portfolio">
+<nav>
+  <a href="#profile">ข้อมูลผู้สมัคร</a>
+  <a href="#education">การศึกษา</a>
+  <a href="#essay">เหตุผลในการสมัคร</a>
+  <a href="#awards">รางวัล</a>
+  <a href="#activities">กิจกรรม</a>
+  <a href="#training">การอบรม</a>
+  <a href="#contact">ติดต่อ</a>
+</nav>
 
-        <iframe src="portfolio.pdf"></iframe>
+<main>
+<section id="profile">
+  <h2 class="section-title">หมวด 1 · ข้อมูลผู้สมัคร</h2>
+  <div class="profiles">
+    <article class="profile-card">
+      <img src="palita.jpeg" alt="รูปนางสาวปาลิตา ระวัง">
+      <h3>นายกิตติกวิน พุทธกาล</h3>
+      <p>Palita Rawang</p>
+      <span class="tag">ผู้สมัคร</span>
+    </article>
+    <article class="profile-card">
+      <img src="punyanut.jpeg" alt="รูปนางสาวปุณยนุช ทองสัมฤทธิ์">
+      <h3>นายชลิลเพชร พัดมณี</h3>
+      <p>แฟ้มสะสมผลงาน</p>
+      <span class="tag">ผู้ร่วมจัดทำเว็บไซต์</span>
+    </article>
+  </div>
 
+  <div class="card">
+    <h3>ข้อมูลส่วนตัวและความสนใจ</h3>
+    <div class="info-grid">
+      <div class="info-item"><strong>ชื่อผู้สมัคร:</strong> นายกิตติกวิน พุทธกาล นายชลิลเพชร พัดมณี</div>
+      <div class="info-item"><strong>ชื่อภาษาอังกฤษ:</strong> Kittikawin Phutthakan</div>
+      <div class="info-item"><strong>สถานศึกษา:</strong> โรงเรียนทุ่งใหญ่เฉลิมราชอนุสรณ์ รัชมังคลาภิเษก</div>
+      <div class="info-item"><strong>จังหวัด:</strong> นครศรีธรรมราช</div>
+      <div class="info-item"><strong>หลักสูตร:</strong> หลักสูตรแกนกลาง (สามัญ)</div>
+      <div class="info-item"><strong>ปีการศึกษา:</strong> 2569</div>
+      <div class="info-item"><strong>ผลการเรียนเฉลี่ยสะสม 4 ภาคเรียน:</strong> 3.06</div>
+      <div class="info-item"><strong>สาขาที่สนใจ:</strong> รัฐประศาสตร์</div>
     </div>
+    <p class="small-note" style="margin-top:14px">หมายเหตุ: เว็บไซต์นี้แสดงเฉพาะข้อมูลที่เหมาะสำหรับเผยแพร่ในแฟ้มสะสมผลงาน โดยไม่แสดงเลขประจำตัวประชาชน ที่อยู่ เบอร์โทรศัพท์ หรือข้อมูลผู้ปกครอง</p>
+  </div>
+</section>
 
-    <footer>
-        <h2>THANK YOU</h2>
-        <p>ขอบคุณที่รับชมแฟ้มสะสมผลงาน</p>
-    </footer>
+<section id="education">
+  <h2 class="section-title">หมวด 1 · ประวัติการศึกษา</h2>
+  <div class="card">
+    <p><strong>โรงเรียน:</strong> ทุ่งใหญ่เฉลิมราชอนุสรณ์ รัชมังคลาภิเษก จังหวัดนครศรีธรรมราช</p>
+    <p><strong>หลักสูตร:</strong> หลักสูตรแกนกลาง (สามัญ) · ปีการศึกษา 2569</p>
+    <p><strong>GPAX 4 ภาคเรียน:</strong> 3.06</p>
+    <h3 style="color:var(--purple);margin:18px 0 10px">ผลการเรียนรายกลุ่มสาระ</h3>
+    <div class="info-grid">
+      <div class="info-item">ภาษาไทย — GPA 2.68</div>
+      <div class="info-item">คณิตศาสตร์ — GPA 2.22</div>
+      <div class="info-item">วิทยาศาสตร์ — GPA 3.70</div>
+      <div class="info-item">สังคมศึกษา ศาสนา และวัฒนธรรม — GPA 3.07</div>
+      <div class="info-item">สุขศึกษาและพลศึกษา — GPA 3.83</div>
+      <div class="info-item">ศิลปะ — GPA 3.50</div>
+      <div class="info-item">การงานอาชีพและเทคโนโลยี — GPA 2.95</div>
+      <div class="info-item">ภาษาต่างประเทศ — GPA 3.06</div>
+    </div>
+  </div>
+</section>
+
+<section id="essay">
+  <h2 class="section-title">หมวด 2 · เรียงความ / เหตุผลในการสมัคร</h2>
+  <div class="card">
+    <blockquote>“
+</section>
+
+<section id="awards">
+  <h2 class="section-title">หมวด 4.1 · รางวัล / เกียรติบัตร</h2>
+  <div class="cards">
+    <article class="award-card">
+      <h3>การแข่งขันอัจฉริยะทางธุรกิจ</h3>
+      <span class="tag">รางวัลระดับเหรียญเงิน</span>
+      <p><strong>วันที่:</strong> 12–13 มกราคม 2569</p>
+      <p>เข้าร่วมการแข่งขันอัจฉริยะทางธุรกิจ ระดับชั้น ม.4–ม.6 เป็นครั้งแรก และตั้งใจทบทวนเตรียมตัวอย่างต่อเนื่องจนได้รับรางวัลระดับเหรียญเงิน ประสบการณ์นี้ทำให้เรียนรู้ว่าความสำเร็จเกิดจากความตั้งใจและการเตรียมตัวอย่างสม่ำเสมอ</p>
+    </article>
+    <article class="award-card">
+      <h3>การประกวดโครงงานคุณธรรม</h3>
+      <span class="tag">เหรียญทอง รองชนะเลิศอันดับ 1</span>
+      <p><strong>วันที่:</strong> 12–13 มกราคม 2569</p>
+      <p>รับหน้าที่เป็นผู้นำเสนอผลงานได้พัฒนาทักษะการสื่อสารการพูดต่อหน้าสาธารณชนการตอบข้อซักถามการทำงานเป็นทีมและการแก้ไขปัญหาเฉพาะหน้า</p>
+</article>แรงบันดาลใจในการเลือกศึกษาตอในสาขารัฐประศาสนศาสตรของกระผมเพราะมีความตั้งใจที่จะทํางานรับใชประชาชนและมีเปาหมายอยากเปนปลัดอําเภอผมเชื่อวาตําแหนงนี้เปนงานที่ไดอยูใกลชิดกับประชาชนไดรับฟงปญหาของคนในพื้นที่และมีโอกาสชวยแกไขปญหาใหเกิดประโยชนกับสังคมอยางแทจริงที่ผานมผมเคยฝกประสบการณที่
+สํานักงานสงเสริมการปกครองทองถิ่นอําเภอทุงใหญทําใหไดเห็นการ
+ทํางานของหนวยงานภาครัฐการใหบริการประชาชนและการทํางานรวม
+กันเพื่อแก้ไขปัญหาต่างๆนอกจากนี้การได้ทําหนาที่เป็นประธานคณะสี
+มวงของโรงเรียนยังชวยให้ผมได้ฝึกความเป็นผู้นําความรับผิดชอบการ
+ทํางานเป็นทีมและการตัดสินใจในสถานการณ์ต่างๆผมจึงเชื่อวาสาขา
+รัฐประศาสนศาสตรจะเปนจุดเริ่มตนที่ช่วยพัฒนาความรูทักษะและ
+ประสบการณเพื่อเตรียมความพร้อมในการทํางานด้านการปกครองและ
+ก้าวไปสู่การเป็นปลัดอําเภอที่ตั้งใจทํางานเพื่อประชาชนรับฟังทุกปัญหา
+และพัฒนาชุมชนให้ดีขึ้นในอนาค
+  </div>
+</section>
+
+<section id="activities">
+  <h2 class="section-title">หมวด 4.3 · กิจกรรม</h2>
+  <div class="cards">
+    <article class="activity-card"><h3>1. กิจกรรมปลูกป่าชายเลน</h3><p><strong>ปี:</strong> 2568</p><p>ได้รับเลือกเป็นคณะกรรมการนักเรียน มีส่วนร่วมคิดและดำเนินนโยบาย เช่น โบว์กิ๊ฟติดผมนักเรียนและปกสมุดโรงเรียน รวมถึงร่วมจัดกิจกรรมและจำหน่ายสินค้า ฝึกการวางแผน ประสานงาน และแก้ไขปัญหา</p></article>
+    <article class="activity-card"><h3>2. ขายของในงานกีฬาสานสัมพันธ์</h3><p><strong>วันที่:</strong> 25 ธันวาคม 2568</p><p>เป็นตัวแทนจำหน่ายลูกชิ้นและน้ำ มีส่วนร่วมเตรียมสินค้า จัดร้าน ขายและบริการลูกค้า ฝึกสังเกตความต้องการและปรับแผนเมื่อสินค้าไม่เพียงพอ</p></article>
+    <article class="activity-card"><h3>3. กิจกรรมมอบหมวก</h3><p><strong>วันที่:</strong> 30 ธันวาคม 2568</p><p>ร่วมจัดตลาดวันปีใหม่ในนามสภานักเรียน รับหน้าที่ขายปูนพลาสเตอร์ ช่วยเตรียมและประชาสัมพันธ์สินค้า จนขายหมดและได้กำไรตามเป้าหมาย</p></article>
+    <article class="activity-card"><h3>4. ร่วมทำบุญเนื่องในวันธรรมสวนะ</h3><p><strong>วันที่:</strong> 20 มิถุนายน 2569</p><p>ร่วมเปิดร้านขายขนมจาก ลูกชิ้นนึ่ง และน้ำเปล่า ได้ฝึกสื่อสารกับลูกค้าที่หลากหลายและเรียนรู้การขายในสถานการณ์จริง</p></article>
+    <article class="activity-card"><h3>5. เป็นประธานสี</h3><p><strong>วันที่:</strong> 20–22 มีนาคม 2569</p><p>เข้าร่วมค่ายเพื่อพัฒนาทักษะความเป็นผู้นำ การทำงานร่วมกับผู้อื่น การสื่อสาร และการแก้ไขปัญหาเฉพาะหน้า</p></article>
+    <article class="activity-card"><h3>6. กิจกรรมจิตอาสาพัฒนาชุมชน</h3><p><strong>วันที่:</strong> 15–16 พฤศจิกายน 2568</p><p>เรียนรู้การค้นหาตัวตนผ่านกิจกรรมและการทำงานกลุ่ม ฝึกสื่อสาร รับฟังความคิดเห็น และเข้าใจจุดแข็งของตนเอง</p></article>
+    <article class="activity-card"><h3>7. วิทยากรร่วมอบรมค่ายคุณธรรม</h3><p><strong>วันที่:</strong> 23 มิถุนายน 2569</p><p>ทำหน้าที่พี่ประจำกลุ่ม พาน้อง ๆ เข้าร่วมกิจกรรม สาธิตเกม อธิบายกติกา และช่วยเหลือระหว่างกิจกรรม ฝึกปรับวิธีสื่อสารให้เหมาะกับแต่ละคน</p></article>
+    <article class="activity-card"><h3>8. แข่งขัยจรวดขวดน้ำ</h3><p><strong>ปี:</strong> 2568</p><p>มีส่วนร่วมวางแผนและจัดเตรียมกิจกรรมของคณะสี ประสานงานกับสมาชิก และดูแลงานที่ได้รับมอบหมาย</p></article>
+    <article class="activity-card"><h3>9. ฝึกงาน ณ สำนักงานส่งเสริมการปกครองท้องถิ่น</h3><p><strong>ปี:</strong> 2569</p><p>ปฏิบัติหน้าที่ตัวแทนถือป้ายโรงเรียนและส่งมอบเหรียญรางวัลแก่นักกีฬา เรียนรู้การเตรียมตัวและรักษาความพร้อมตามเวลาที่กำหนด</p></article>
+    <article class="activity-card"><h3>10. ตัวแทนนักเรียนต้อนรับรองผู้อำนวยการโรงเรียน</h3><p><strong>วันที่:</strong> 10 กรกฎาคม 2569</p><p>เป็นตัวแทนถือป้ายคำขวัญโรงเรียนในขบวนต้อนรับ ฝึกความมั่นใจและการวางตัวในฐานะตัวแทนของโรงเรียน</p></article>
+    <article class="activity-card"><h3>11. ตัวแทนนักเรียนต้อนรับผู้อำนวยการสำนักงานเขตพื้นที่ฯ</h3><p><strong>ปี:</strong> พฤศจิกายน 2568</p><p>ได้รับเลือกเป็นตัวแทนนักเรียนชั้น ม.5 ในการยืนต้อนรับ ฝึกความรับผิดชอบ บุคลิกภาพ และการปฏิบัติหน้าที่ในฐานะตัวแทนนักเรียน</p></article>
+    <article class="activity-card"><h3>12. ตัวแทนสภาร่วมดำเนินกิจกรรมวันอาเซียน</h3><p><strong>ปี:</strong> สิงหาคม 2569</p><p>ช่วยถือธงและร่วมจัดตลาดวันอาเซียน มีส่วนร่วมเตรียมงานและดำเนินกิจกรรม ฝึกการออกแบบกิจกรรมให้ตอบโจทย์ผู้เข้าร่วมและทำงานร่วมกับผู้อื่น</p></article>
+  </div>
+</section>
+
+<section id="training">
+  <h2 class="section-title">หมวด 4.4 · การอบรม / การเรียนเพิ่มทักษะ</h2>
+  <div class="cards">
+    <article class="card">
+      <h3>การฝึกงานธนาคาร ธ.ก.ส.</h3>
+      <p><strong>วันที่:</strong> 9–13 มีนาคม 2569</p>
+      <p>ฝึกงานที่ธนาคารเพื่อการเกษตรและสหกรณ์การเกษตร สาขาถ้ำพรรณรา ได้เรียนรู้การทำงานจริง ช่วยจัดเรียงเอกสารและแฟ้มข้อมูล ตรวจสอบและสรุปยอดเงินเบี้ยยังชีพผู้สูงอายุ ต้อนรับผู้ใช้บริการ และช่วยผู้สูงอายุกดบัตรคิว</p>
+    </article>
+    <article class="card">
+      <h3>อบรมชมรม TO BE NUMBER ONE</h3>
+      <p><strong>วันที่:</strong> 10–12 มิถุนายน 2569</p>
+      <p>เข้าร่วมอบรมโครงการรณรงค์ป้องกันและแก้ไขปัญหายาเสพติด กิจกรรมสร้างเครือข่าย “ศูนย์เพื่อนใจ TO BE NUMBER ONE” ในฐานะสมาชิกชมรมและเหรัญญิก เรียนรู้การป้องกันปัญหายาเสพติดและการทำงานร่วมกับผู้อื่น</p>
+    </article>
+  </div>
+</section>
+
+<section id="creative">
+  <h2 class="section-title">หมวด 4.5 · ผลงานสร้างสรรค์</h2>
+  <div class="card">
+    <h3>การคิดและตัดต่อ MV</h3>
+    <p><strong>ช่วงเวลา:</strong> มกราคม 2568</p>
+    <p>เป็นผู้คิดและวางโครงเรื่อง MV ตั้งแต่เริ่มต้น กำหนดแนวทางและลำดับการดำเนินเรื่อง รวมถึงรับผิดชอบการตัดต่อและเรียบเรียงวิดีโอให้มีความต่อเนื่อง โดยทำงานร่วมกับเพื่อน ๆ ที่รับหน้าที่แสดง</p>
+    <p><strong>ลิงก์ผลงาน:</strong> <a href="https://youtu.be/dIHkzKjx4qY?feature=shared" target="_blank" rel="noopener">รับชมผลงาน MV</a></p>
+  </div>
+</section>
+
+<section id="contact">
+  <h2 class="section-title">ติดต่อ</h2>
+  <div class="card" style="text-align:center">
+    <p>ขอบพระคุณคณะกรรมการที่ให้ความสนใจแฟ้มสะสมผลงาน</p>
+    <p class="small-note">สามารถเพิ่มช่องทางติดต่อที่ต้องการเผยแพร่ได้ในส่วนนี้</p>
+  </div>
+</section>
+</main>
+
+<footer>
+  <p>TCASFOLIO · แฟ้มสะสมผลงาน ประจำปี 2570</p>
+  <p>มหาวิทยาลัยเกษตรศาสตร์ · คณะบริหารธุรกิจ</p>
+</footer>
 
 </body>
 </html>
+'''
+(base / "index.html").write_text(html, encoding="utf-8")
+
+zip_path = Path("/mnt/data/TCASFOLIO_website_with_photos.zip")
+with ZipFile(zip_path, "w", ZIP_DEFLATED) as z:
+    for p in base.iterdir():
+        z.write(p, arcname=p.name)
+
+html_path = Path("/mnt/data/index.html")
+html_path.write_text(html, encoding="utf-8")
+
+print("สร้างไฟล์เว็บไซต์และแพ็กเกจพร้อมรูปภาพแล้ว")
+print(f"HTML: {html_path}")
+print(f"ZIP: {zip_path}")
