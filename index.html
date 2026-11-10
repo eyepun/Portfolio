@@ -1,0 +1,204 @@
+from pathlib import Path
+import base64, html
+
+img1_path = Path("/mnt/data/07C5C609-CC41-4CA6-AB01-A04450E23939.jpeg")
+img2_path = Path("/mnt/data/CC528727-C67E-4A95-B8DB-E4429BDB006E.jpeg")
+
+def data_uri(path):
+    mime = "image/jpeg"
+    return f"data:{mime};base64," + base64.b64encode(path.read_bytes()).decode("ascii")
+
+img1 = data_uri(img1_path)
+img2 = data_uri(img2_path)
+
+page = f"""<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio | กิตติกวิน และ ชลิลเพชร</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap');
+:root{{--navy:#173b68;--blue:#2f75b9;--sky:#eaf5ff;--ink:#24364b;--muted:#60758b;--line:#d7e6f3}}
+*{{box-sizing:border-box}}
+body{{margin:0;background:#edf3f8;color:var(--ink);font-family:'Kanit',sans-serif;line-height:1.65}}
+nav{{position:sticky;top:0;z-index:10;background:#fff;box-shadow:0 2px 12px #173b6818;padding:10px 4%;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}}
+nav strong{{color:var(--navy);font-size:18px}}
+nav a{{text-decoration:none;color:var(--blue);font-size:14px;margin:0 5px}}
+nav a:hover{{text-decoration:underline}}
+main{{max-width:1000px;margin:28px auto;padding:0 16px}}
+.sheet{{background:#fff;min-height:650px;margin:0 auto 28px;padding:54px 7%;border-radius:18px;box-shadow:0 8px 28px #183b6012;position:relative;overflow:hidden;page-break-after:always}}
+.sheet:before{{content:"";position:absolute;left:0;top:0;width:100%;height:9px;background:linear-gradient(90deg,#173b68,#4f9bd5,#b7dcf5)}}
+.kicker{{color:var(--blue);letter-spacing:2px;font-size:13px;font-weight:600}}
+h1,h2,h3{{color:var(--navy);margin-top:8px}}
+h1{{font-size:42px;line-height:1.2}}
+h2{{font-size:30px}}
+.subtitle{{color:var(--muted);font-size:17px}}
+.cover{{text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}}
+.cover h1{{font-size:52px;letter-spacing:3px;margin:8px 0}}
+.cover .rule{{height:4px;width:110px;background:#4f9bd5;border-radius:9px;margin:18px}}
+.people{{display:flex;gap:26px;justify-content:center;flex-wrap:wrap;margin:30px 0}}
+.person{{width:240px;text-align:center;background:var(--sky);padding:18px;border-radius:18px;border:1px solid var(--line)}}
+.person img{{width:170px;height:220px;object-fit:cover;border-radius:12px;border:5px solid #fff;box-shadow:0 4px 14px #173b6820}}
+.person h3{{font-size:18px;margin:12px 0 0}}
+.person p{{margin:3px 0;color:var(--muted)}}
+.grid{{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}}
+.card{{background:#f6faff;border:1px solid var(--line);border-radius:14px;padding:18px}}
+.card h3{{margin-top:0}}
+.label{{color:var(--blue);font-weight:600}}
+ul{{padding-left:22px}}
+li{{margin:5px 0}}
+.note{{background:#fff8e7;border-left:4px solid #e5b64c;padding:12px 16px;border-radius:8px;color:#765b20}}
+.profile-row{{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}}
+.profile-row img{{width:220px;height:290px;object-fit:cover;border-radius:14px}}
+.profile-info{{flex:1;min-width:240px}}
+.data{{display:grid;grid-template-columns:150px 1fr;gap:8px 14px}}
+.data div:nth-child(odd){{font-weight:600;color:var(--blue)}}
+.badge{{display:inline-block;background:#e6f3ff;color:var(--navy);padding:5px 12px;border-radius:99px;margin:3px;font-size:13px}}
+.footer{{position:absolute;bottom:20px;right:7%;color:#8aa0b5;font-size:12px}}
+.center{{text-align:center}}
+.placeholder{{color:#8999a8;font-style:italic}}
+@media(max-width:650px){{.sheet{{padding:38px 22px;min-height:unset}}h1{{font-size:34px}}.cover h1{{font-size:40px}}h2{{font-size:25px}}.grid{{grid-template-columns:1fr}}.data{{grid-template-columns:120px 1fr}}nav{{position:static}}}}
+@media print{{body{{background:#fff}}nav{{display:none}}main{{margin:0;padding:0;max-width:none}}.sheet{{box-shadow:none;border-radius:0;margin:0;min-height:100vh;break-after:page}}}}
+</style>
+</head>
+<body>
+<nav>
+<strong>PORTFOLIO</strong>
+<div>
+<a href="#cover">หน้าปก</a><a href="#preface">คำนำ</a><a href="#purpose">จุดมุ่งหมาย</a>
+<a href="#profile1">ประวัติคนที่ 1</a><a href="#profile2">ประวัติคนที่ 2</a>
+<a href="#education">การศึกษา</a><a href="#activities">กิจกรรม</a>
+</div>
+</nav>
+<main>
+<section class="sheet cover" id="cover">
+<div class="kicker">แฟ้มสะสมผลงาน</div>
+<h1>PORTFOLIO</h1>
+<div class="rule"></div>
+<h2>คณะมนุษยศาสตร์และสังคมศาสตร์</h2>
+<p class="subtitle">สาขารัฐประศาสนศาสตร์</p>
+<div class="people">
+<div class="person"><img src="{img1}" alt="รูปโปรไฟล์ นายกิตติกวิน พุทธกาล"><h3>นายกิตติกวิน พุทธกาล</h3><p>เลขที่ 12 • ม.6/2</p></div>
+<div class="person"><img src="{img2}" alt="รูปโปรไฟล์ นายชลิลเพชร พัดมณี"><h3>นายชลิลเพชร พัดมณี</h3><p>เลขที่ 20 • ม.6/2</p></div>
+</div>
+<p class="subtitle">โรงเรียนทุ่งใหญ่เฉลิมราชอนุสรณ์รัชมังคลาภิเษก</p>
+<div class="footer">01 / PORTFOLIO</div>
+</section>
+
+<section class="sheet" id="preface">
+<div class="kicker">PREFACE</div><h2>คำนำ</h2>
+<p>แฟ้มสะสมผลงาน (Portfolio) เล่มนี้จัดทำขึ้นเพื่อใช้ประกอบการสมัครเข้าศึกษาต่อในคณะมนุษยศาสตร์และสังคมศาสตร์ สาขารัฐประศาสนศาสตร์ โดยรวบรวมข้อมูลประวัติส่วนตัว ผลการเรียน กิจกรรมที่เข้าร่วม ผลงาน และประสบการณ์ต่าง ๆ ที่สะท้อนถึงความตั้งใจและความพร้อมในการศึกษาต่อ</p>
+<p>สาขารัฐประศาสนศาสตร์เป็นสาขาที่เกี่ยวข้องกับการบริหารงานภาครัฐ การทำงานเพื่อส่วนรวม และการให้บริการประชาชน ผู้จัดทำหวังเป็นอย่างยิ่งว่าแฟ้มสะสมผลงานเล่มนี้จะช่วยให้คณะกรรมการได้เห็นถึงความตั้งใจ ความสามารถ และความพร้อมในการเข้าศึกษาต่อ</p>
+<p>หากมีข้อผิดพลาดหรือข้อบกพร่องประการใด ผู้จัดทำขอน้อมรับคำแนะนำและขออภัยมา ณ โอกาสนี้</p>
+<div class="footer">02 / PREFACE</div>
+</section>
+
+<section class="sheet" id="purpose">
+<div class="kicker">STATEMENT OF PURPOSE</div><h2>แรงบันดาลใจในการศึกษาต่อ</h2>
+<p>แรงบันดาลใจในการเลือกศึกษาต่อในสาขารัฐประศาสนศาสตร์ เกิดจากความตั้งใจที่จะทำงานรับใช้ประชาชน และมีเป้าหมายอยากเป็นปลัดอำเภอ เพราะเป็นงานที่ได้อยู่ใกล้ชิดกับประชาชน รับฟังปัญหาของคนในพื้นที่ และมีโอกาสช่วยแก้ไขปัญหาให้เกิดประโยชน์กับสังคมอย่างแท้จริง</p>
+<p>จากประสบการณ์ฝึกงาน ณ สำนักงานส่งเสริมการปกครองท้องถิ่นอำเภอทุ่งใหญ่ ทำให้ได้เห็นการทำงานของหน่วยงานภาครัฐ การให้บริการประชาชน และการทำงานร่วมกันเพื่อแก้ไขปัญหาต่าง ๆ อีกทั้งการทำหน้าที่เป็นประธานคณะสีม่วงยังช่วยฝึกความเป็นผู้นำ ความรับผิดชอบ การทำงานเป็นทีม และการตัดสินใจ</p>
+<p>จึงเชื่อว่าสาขารัฐประศาสนศาสตร์จะเป็นจุดเริ่มต้นในการพัฒนาความรู้และทักษะ เพื่อเตรียมความพร้อมในการทำงานด้านการปกครองและทำงานเพื่อประชาชนในอนาคต</p>
+<div class="note">หมายเหตุ: เนื้อหาแรงบันดาลใจและประสบการณ์ในหน้านี้อ้างอิงจากแฟ้มต้นฉบับของนายกิตติกวิน ควรแก้ไขให้ตรงกับประสบการณ์ของนายชลิลเพชร หากใช้เป็นแฟ้มร่วมกัน</div>
+<div class="footer">03 / STATEMENT OF PURPOSE</div>
+</section>
+
+<section class="sheet" id="profile1">
+<div class="kicker">PROFILE 01</div><h2>ประวัติส่วนตัว</h2>
+<div class="profile-row"><img src="{img1}" alt="นายกิตติกวิน พุทธกาล"><div class="profile-info">
+<h3>นายกิตติกวิน พุทธกาล</h3><p class="subtitle">เลขที่ 12 • ชั้นมัธยมศึกษาปีที่ 6/2</p>
+<div class="data">
+<div>ชื่อเล่น</div><div>ก้อง</div>
+<div>โรงเรียน</div><div>ทุ่งใหญ่เฉลิมราชอนุสรณ์รัชมังคลาภิเษก</div>
+<div>แผนการเรียน</div><div>ศิลป์-คำนวณ</div>
+<div>สัญชาติ</div><div>ไทย</div>
+<div>เชื้อชาติ</div><div>ไทย</div>
+<div>ศาสนา</div><div>พุทธ</div>
+<div>งานอดิเรก</div><div>วาดภาพ ฟังเพลง</div>
+<div>กิจกรรมที่ชอบ</div><div>ถ่ายรูป อ่านหนังสือ เขียนหนังสือ</div>
+<div>คติประจำใจ</div><div>ทำเพื่อใคร ใจรู้ดี</div>
+</div></div></div>
+<div class="note" style="margin-top:20px">ข้อมูลวันเกิด อายุ ที่อยู่ เบอร์โทรศัพท์ และข้อมูลครอบครัว ควรตรวจสอบและกรอกใหม่ก่อนนำไปเผยแพร่ เพื่อความถูกต้องและเป็นส่วนตัว</div>
+<div class="footer">04 / PROFILE</div>
+</section>
+
+<section class="sheet" id="profile2">
+<div class="kicker">PROFILE 02</div><h2>ประวัติส่วนตัว</h2>
+<div class="profile-row"><img src="{img2}" alt="นายชลิลเพชร พัดมณี"><div class="profile-info">
+<h3>นายชลิลเพชร พัดมณี</h3><p class="subtitle">เลขที่ 20 • ชั้นมัธยมศึกษาปีที่ 6/2</p>
+<div class="data">
+<div>ชื่อ-สกุล</div><div>นายชลิลเพชร พัดมณี</div>
+<div>ชื่อเล่น</div><div class="placeholder">กรอกชื่อเล่น</div>
+<div>วันเกิด</div><div class="placeholder">กรอกวัน/เดือน/ปีเกิด</div>
+<div>โรงเรียน</div><div>ทุ่งใหญ่เฉลิมราชอนุสรณ์รัชมังคลาภิเษก</div>
+<div>แผนการเรียน</div><div class="placeholder">กรอกแผนการเรียน</div>
+<div>งานอดิเรก</div><div class="placeholder">กรอกงานอดิเรก</div>
+<div>ความสามารถ</div><div class="placeholder">กรอกความสามารถ</div>
+<div>คติประจำใจ</div><div class="placeholder">กรอกคติประจำใจ</div>
+</div></div></div>
+<div class="note" style="margin-top:20px">กรอกข้อมูลส่วนตัวของนายชลิลเพชรเพิ่มเติมในช่องที่ระบุไว้ เพื่อให้แฟ้มสมบูรณ์</div>
+<div class="footer">05 / PROFILE</div>
+</section>
+
+<section class="sheet">
+<div class="kicker">TRANSCRIPT</div><h2>ผลการเรียน</h2>
+<div class="grid">
+<div class="card center"><h3>นายกิตติกวิน พุทธกาล</h3><p class="subtitle">เกรดเฉลี่ย 4 เทอม</p><h1>3.06</h1></div>
+<div class="card center"><h3>นายชลิลเพชร พัดมณี</h3><p class="subtitle">เกรดเฉลี่ย</p><h1 class="placeholder">กรอก GPA</h1></div>
+</div>
+<p class="note">ควรแนบภาพใบแสดงผลการเรียน (Transcript) ของแต่ละคนในส่วนนี้</p>
+<div class="footer">06 / TRANSCRIPT</div>
+</section>
+
+<section class="sheet" id="education">
+<div class="kicker">EDUCATION</div><h2>ประวัติการศึกษา</h2>
+<div class="card"><h3>ระดับประถมศึกษา</h3><p>โรงเรียนบ้านนาใหญ่</p></div>
+<div class="card" style="margin-top:14px"><h3>ระดับมัธยมศึกษาตอนต้น</h3><p>โรงเรียนทุ่งใหญ่เฉลิมราชอนุสรณ์รัชมังคลาภิเษก</p></div>
+<div class="card" style="margin-top:14px"><h3>ระดับมัธยมศึกษาตอนปลาย</h3><p>โรงเรียนทุ่งใหญ่เฉลิมราชอนุสรณ์รัชมังคลาภิเษก</p></div>
+<div class="note" style="margin-top:18px">ข้อมูลสถานศึกษานี้ถอดตามไฟล์ต้นฉบับ กรุณาตรวจสอบว่าเป็นประวัติของนักเรียนทั้งสองคนหรือไม่</div>
+<div class="footer">07 / EDUCATION</div>
+</section>
+
+<section class="sheet" id="activities">
+<div class="kicker">ACTIVITIES</div><h2>กิจกรรมที่เข้าร่วม</h2>
+<div class="grid">
+<div class="card"><h3>01 • จิตอาสาปลูกป่าชายเลน</h3><p>ร่วมกิจกรรมจิตอาสาปลูกป่าชายเลนเพื่ออนุรักษ์สิ่งแวดล้อมชายฝั่ง จัดขึ้นโดยเทศบาลเมืองปากพูน</p></div>
+<div class="card"><h3>02 • มอบหมวกและผ้าพันคอจิตอาสา</h3><p>เข้าร่วมกิจกรรมมอบหมวกและผ้าพันคอจิตอาสาพระราชทาน</p></div>
+<div class="card"><h3>03 • ทำบุญวันธรรมสวนะ</h3><p>ร่วมทำบุญเนื่องในวันธรรมสวนะ ณ วัดขนาด อำเภอทุ่งใหญ่ จังหวัดนครศรีธรรมราช</p></div>
+<div class="card"><h3>04 • ประธานสีม่วง</h3><p>ได้รับการเลือกให้เป็นประธานสีม่วงในการแข่งขันกีฬาสีภายในโรงเรียน</p></div>
+<div class="card"><h3>05 • จิตอาสาพัฒนาชุมชน</h3><p>เข้าร่วมกิจกรรมจิตอาสาพัฒนาชุมชน ณ วัดประดิษฐาราม</p></div>
+<div class="card"><h3>06 • แข่งขันจรวดขวดน้ำ</h3><p>เข้าร่วมการแข่งขันจรวดขวดน้ำระดับประเทศครั้งที่ 24 (รอบคัดเลือก) ณ มหาวิทยาลัยสงขลานครินทร์ วิทยาเขตสุราษฎร์ธานี จัดโดย อพวช.</p></div>
+<div class="card"><h3>07 • ฝึกประสบการณ์</h3><p>ฝึกงาน ณ สำนักงานส่งเสริมการปกครองท้องถิ่นอำเภอทุ่งใหญ่ จังหวัดนครศรีธรรมราช</p></div>
+</div>
+<div class="note" style="margin-top:18px">กิจกรรมข้างต้นมาจากไฟล์ต้นฉบับของนายกิตติกวิน โปรดแยกกิจกรรมของนายชลิลเพชรให้ตรงกับหลักฐานจริง</div>
+<div class="footer">08 / ACTIVITIES</div>
+</section>
+
+<section class="sheet">
+<div class="kicker">CERTIFICATES</div><h2>เกียรติบัตร</h2>
+<div class="grid">
+<div class="card center"><h3>นายกิตติกวิน พุทธกาล</h3><p class="placeholder">วางรูปเกียรติบัตรที่ 1 ตรงนี้</p></div>
+<div class="card center"><h3>นายชลิลเพชร พัดมณี</h3><p class="placeholder">วางรูปเกียรติบัตรที่ 1 ตรงนี้</p></div>
+</div>
+<p class="subtitle">เพิ่มรูปเกียรติบัตรได้โดยใส่แท็ก &lt;img&gt; ในกรอบของแต่ละคน</p>
+<div class="footer">09 / CERTIFICATES</div>
+</section>
+
+<section class="sheet center">
+<div class="kicker">THANK YOU</div><h1 style="margin-top:90px">THANK YOU</h1>
+<div class="rule"></div><h2>ขอบคุณครับ</h2>
+<p class="subtitle">ขอบพระคุณคณะกรรมการที่สละเวลาอ่านแฟ้มสะสมผลงาน</p>
+<div class="people">
+<div class="person"><img src="{img1}" alt="นายกิตติกวิน พุทธกาล"><h3>นายกิตติกวิน พุทธกาล</h3></div>
+<div class="person"><img src="{img2}" alt="นายชลิลเพชร พัดมณี"><h3>นายชลิลเพชร พัดมณี</h3></div>
+</div>
+<div class="footer">10 / THANK YOU</div>
+</section>
+</main>
+</body>
+</html>
+"""
+
+out = Path("/mnt/data/portfolio_kittikawin_chonlilphet.html")
+out.write_text(page, encoding="utf-8")
+print(f"สร้างไฟล์เรียบร้อย: {out} ({out.stat().st_size:,} bytes)")
