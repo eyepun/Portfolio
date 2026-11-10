@@ -1,0 +1,20 @@
+from pathlib import Path
+import re
+
+html_path = Path("/mnt/data/portfolio_kittikawin_chonlilphet.html")
+source = html_path.read_text(encoding="utf-8")
+match = re.search(r"<style>(.*?)</style>", source, flags=re.S)
+if not match:
+    raise ValueError("ไม่พบ CSS ในไฟล์ HTML")
+css = match.group(1).strip() + "\n"
+
+css_path = Path("/mnt/data/style.css")
+css_path.write_text(css, encoding="utf-8")
+
+# Create a linked HTML version so the separate CSS works immediately when both files are kept together.
+linked_html = source[:match.start()] + '<link rel="stylesheet" href="style.css">' + source[match.end():]
+linked_path = Path("/mnt/data/portfolio_with_separate_css.html")
+linked_path.write_text(linked_html, encoding="utf-8")
+
+print(f"สร้างไฟล์ CSS แล้ว: {css_path} ({css_path.stat().st_size:,} bytes)")
+print(f"สร้าง HTML ที่เรียกใช้ CSS แยกแล้ว: {linked_path}")
